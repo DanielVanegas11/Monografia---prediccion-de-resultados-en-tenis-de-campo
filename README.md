@@ -12,27 +12,29 @@ Entrega de proyecto Machine Learning II
 
 #### DATA ADQUISITION
 
-Kaggle
+Amazon Kinesis Data Streams o Amazon Kinesis Data Firehose.
 
 #### TRAINING
 
-Notebook
+Amazon SageMaker.
 
 #### STORAGE
 
-Drive y en el futuro S3
+Amazon S3 (Simple Storage Service).
 
 #### INFERENCE
 
-Aplicación Fastapi
+Fast api
 
 #### EVALUATION
 
-Revision del accuraccy periodicamente
+Amazon SageMaker Processing.
 
 #### MONITORING
 
-Es para revisar que el modelo esté funcionando bien. En una posible implementacion futura se puede aplicar Lambda para Amazon para tener máqeuinas virtuales que corran el programa y que alerten cuando el modelo no esté funciinando bien y tiene seguimiento de logs de las veces que se ha usado
+Amazon CloudWatch.
+
+Servicio de monitoreo y observación que proporciona monitoreo de métricas, registros y alarmas para los servicios y aplicaciones de Amazon Web Services 
 
 #### CONTROL
 

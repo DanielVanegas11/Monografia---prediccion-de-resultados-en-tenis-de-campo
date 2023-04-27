@@ -8,6 +8,3 @@ app = FastAPI()
 async def model_prediction():
     pass
 
-
-
-NO ME DIO EL TIEMPO PERO AHI YA ESTÁ EL ESQUELETO DE FastAPI
