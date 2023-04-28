@@ -1,7 +1,7 @@
 <h1>Taller 3 - Machine Learning II</h1>
 <h2>Predicción de resultados en encuentros profesionales de Tenis de Campo</h2>
 
-
+    ![Tux, the Linux mascot](/resources/images/Poster.png)
 ### PLANTEAMIENTO DEL PROBLEMA
 
 ### TÉCNICAS DEL CURSO USADAS
