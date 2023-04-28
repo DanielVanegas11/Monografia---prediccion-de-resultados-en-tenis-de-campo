@@ -1,5 +1,5 @@
-<h2>Taller 3 - Machine Learning II</h2>
-<h3>Predicción de resultados en encuentros profesionales de Tenis de Campo</h3>
+<h1>Taller 3 - Machine Learning II</h1>
+<h2>Predicción de resultados en encuentros profesionales de Tenis de Campo</h2>
 
 
 ### PLANTEAMIENTO DEL PROBLEMA
