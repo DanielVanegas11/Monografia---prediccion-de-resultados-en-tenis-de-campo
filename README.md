@@ -2,6 +2,7 @@
 <h2>Predicción de resultados en encuentros profesionales de Tenis de Campo</h2>
 
     ![Tux, the Linux mascot](/resources/images/Poster.png)
+    ![Descripción de la imagen](resources/images/Poster.png)
 ![The San Juan Mountains are beautiful!](/assets/images/Poster.png "San Juan Mountains")
 ### PLANTEAMIENTO DEL PROBLEMA
 
