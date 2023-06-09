@@ -1,10 +1,10 @@
 #uvicorn main:app --reload
-from pydantic import BaseModel
+from pydantic import BaseModel,constr,conint,StrictInt
 from pydantic import Field
+from enum import Enum
 import pandas as pd
 import joblib
 from fastapi import FastAPI
-
 
 
 app = FastAPI(title="Aplicación de predicción de resultados en Tenis de Campo")
@@ -13,32 +13,24 @@ class PredictionOut(BaseModel):
     answer: str
 
 class TextIn(BaseModel):
-  J1_2ndWon: int = Field(..., ge=0)  # ... indica que el campo es obligatorio. ge= Acotar los valores a ser mayores o iguales a 0
-  J1_ace: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J1_bpFaced: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J1_df: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J1_age: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J1_ht: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J1_rank: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_2ndWon: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_ace: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_bpFaced: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_df: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_age: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_ht: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_rank: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J1_hand_R: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  #surface_Clay: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  #surface_Grass: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  #surface_Hard: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  surface: str = Field(..., choices=["C", "G", "H"])
-
-
-  tourney_level_G: int = Field(..., ge=0, le=1, choices=[0, 1]) # Acotar los valores a ser 0 o 1
-  tourney_level_M: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-  J2_hand_R: int = Field(..., ge=0)  # Acotar los valores a ser mayores o iguales a 0
-
-
+  J1_2ndWon: conint(ge=0, le=100, strict=True) = Field(...,)
+  J1_ace: conint(ge=0, le=100, strict=True) = Field(...,)
+  J1_bpFaced:  conint(ge=0, le=100, strict=True) = Field(...,)
+  J1_df:  conint(ge=0, le=100, strict=True) = Field(...,)
+  J1_age:  conint(ge=10, le=100, strict=True) = Field(...,)
+  J1_ht:  conint(ge=100, le=250, strict=True) = Field(...,)
+  J1_rank:  conint(ge=1, le=100, strict=True) = Field(...,)
+  J2_2ndWon:  conint(ge=0, le=100, strict=True) = Field(...,)
+  J2_ace:  conint(ge=0, le=100, strict=True) = Field(...,)
+  J2_bpFaced:  conint(ge=0, le=100, strict=True) = Field(...,)
+  J2_df:conint(ge=0, le=100, strict=True) = Field(...,)
+  J2_age: conint(ge=10, le=100, strict=True) = Field(...,)
+  J2_ht:  conint(ge=100, le=250, strict=True) = Field(...,)
+  J2_rank:   conint(ge=1, le=100, strict=True) = Field(...,)
+  J1_hand_R:   conint(ge=0, le=1, strict=True) = Field(...,)
+  surface: str = Field(..., choices=["C", "G", "H","P"])
+  Tourney_level: str = Field(..., choices=["M", "G", "A"])
+  J2_hand_R:   conint(ge=0, le=1, strict=True) = Field(...,)
 
 
 @app.post("/prediccion")
@@ -67,33 +59,24 @@ async def Prediccion_resultado(payload: TextIn):
     J2_ht: Altura.\n
     J2_rank: Posición en el ranking ATP.\n
     J1_hand_R: Mano hábil del jugador (Diestro=1, Zurdo=0).\n
-    surface_Clay: Indicar 1 si el partido se juega en polvo de ladrillo, 0 en cualquier otro caso.\n
-    surface_Grass: Indicar 1 si el partido se juega en cesped, 0 en cualquier otro caso.\n
-    surface_Hard: Indicar 1 si el partido se juega en cemento, 0 en cualquier otro caso.\n
-    tourney_level_G: Indicar 1 si el torneo es Grand Slam, 0 en cualquier otro caso\n
-    tourney_level_M: Indicar 1 si el torneo es Masters 1000, 0 en cualquier otro caso\n
+    surface: Indicar "H" si es pista dura (Hard), "G" si es cesped (Grass), "C" si es polvo de ladrillo (Clay) ó "P" si es carpeta (Carpet). \n
+    Tourney_level: Indicar "G" si es Grand Slam, "M" si es Masters 1000 ó "A" si corresponde a un torneo diferente del circuito ATP.
     J2_hand_R: Mano hábil del jugador (Diestro=1, Zurdo=0).\n
 
     """
-    modelo = joblib.load('resources/model/model.joblib')
+    modelo = joblib.load('resources/model/model.joblib')  #Se carga el modelo
     
     feature_name=['J1_2ndWon', 'J1_ace', 'J1_bpFaced', 'J1_df', 'J1_age', 'J1_ht',
        'J1_rank', 'J2_2ndWon', 'J2_ace', 'J2_bpFaced', 'J2_df', 'J2_age',
        'J2_ht', 'J2_rank', 'J1_hand_R', 'surface_Clay', 'surface_Grass',
-       'surface_Hard', 'tourney_level_G', 'tourney_level_M', 'J2_hand_R']
+       'surface_Hard', 'tourney_level_G', 'tourney_level_M', 'J2_hand_R'] #Se definen las variables que alimentan el modelo en el orden que debe ser.
     
-    datos = pd.DataFrame(columns=feature_name)
-    datos_payload = pd.DataFrame(dict(payload), index=[0]).drop(["surface"],axis=1)
+    datos = pd.DataFrame(columns=feature_name)  #Se crea un dataframe vacío con las columnas del modelo
+    datos_payload = pd.DataFrame(dict(payload), index=[0]).drop(["surface","Tourney_level"],axis=1) # Se crea un dataframe con base en el diccionario generado con los valores ingresados por los usuarios sin incluir aquellas variables que no hacen parte del modelo ya que más adelante si codificará el mismo.
+    datos = datos.merge(datos_payload, how='outer') #Se hace un JOIN con ambos dataframe para que así los valores ingresados por los usuarios queden en el df datos y los únicos valores que quedan vacios (n/a) corresponden a las características que deben ser codificadas ("Surface" y "Tourney_level")
     
-
-    print(datos)
-    print(datos_payload)
-
-
-    datos = datos.merge(datos_payload, how='outer')
-    print(datos)
-    surface = payload.surface
-    print(surface)
+    surface = payload.surface  
+    #Se crea una variable llamada surface que contendrá el valor ingresado por el usuario para el tipo de superficie, luego se hace un condicional para asignar los valores a las características del modelo según sea en cada caso.  
     if surface=="G":
        datos['surface_Clay'].fillna(0, inplace=True)
        datos["surface_Grass"].fillna(1, inplace=True)
@@ -109,12 +92,25 @@ async def Prediccion_resultado(payload: TextIn):
        datos["surface_Grass"].fillna(0, inplace=True)
        datos["surface_Hard"].fillna(1, inplace=True)
 
-    else:
+    elif surface=="P":
        datos['surface_Clay'].fillna(0, inplace=True)
        datos["surface_Grass"].fillna(0, inplace=True)
        datos["surface_Hard"].fillna(0, inplace=True)
 
-    Resultado=modelo.predict(datos)
-    print(datos)
+    Tourney_level=payload.Tourney_level
+    #Se crea una variable llamada Tourney_level que contendrá el valor ingresado por el usuario para el tipo de tornep, luego se hace un condicional para asignar los valores a las características del modelo según sea en cada caso.
+    if Tourney_level=="G":
+       datos['tourney_level_G'].fillna(1, inplace=True)
+       datos["tourney_level_M"].fillna(0, inplace=True)
 
+    elif Tourney_level=="M":
+       datos['tourney_level_G'].fillna(0, inplace=True)
+       datos["tourney_level_M"].fillna(1, inplace=True)
+
+    elif Tourney_level=="A":
+       datos['tourney_level_G'].fillna(0, inplace=True)
+       datos["tourney_level_M"].fillna(0, inplace=True)
+
+    Resultado=modelo.predict(datos)
+    
     return {"Resultado":Resultado.item(0)}
